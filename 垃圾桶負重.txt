@@ -1,3 +1,3 @@
-mbot �b���F��t�j�ɡA�̤j�t���i�F��5����Ambot�|�ܽw�C
-mbot �b���F��t�z�ɡA�̤j�t���i�F��3����A�]���F��t���jmbot�J��Ͽj���ؤj�ɷ|�d������
-�ҥH���F��t���վ�H�Υ[�H���U���lí�w mbot_trashcan
+﻿mbot 在馬達轉速強時，最大負重可達到5公斤，mbot會變緩慢
+mbot 在馬達轉速弱時，最大負重可達到3公斤，因馬達轉速不強mbot遇到磁磚間隙大時會卡住不動
+所以馬達轉速應調整以及加以輔助輪子穩定 mbot_trashcan
