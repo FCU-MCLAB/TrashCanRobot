@@ -1,12 +1,15 @@
 .container .background{
+  position: absolute;
+  left: 8px;
+  top: 80px;
   width: 741px;
   height: 818px;
-  z-index: -1;
-} 
+  z-index: -2;
+}
 .container input{
   position: absolute;
-  width: 80px; 
-  height: 80px; 
+  width: 80px;
+  height: 80px;
   border-radius: 80px;
   box-shadow: 1px 1px 3px gray;
   transition-duration: 0.3s;
@@ -26,8 +29,8 @@
 }
 
 .container input:active{
-  width: 75px; 
-  height: 75px; 
+  width: 75px;
+  height: 75px;
   border-radius: 75px;
   box-shadow: 1px 1px 3px gray;
   opacity: 0.75;
@@ -89,4 +92,12 @@
 .container .Yuyun{
   left: 456.25px;
   top: 664.5px;
+}
+
+.class_can{
+  position: absolute;
+  left: 8px;
+  top: 80px;
+  z-index: -1;
+
 }
