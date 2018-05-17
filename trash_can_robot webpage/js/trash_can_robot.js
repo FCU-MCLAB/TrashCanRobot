@@ -130,7 +130,7 @@ function draw(sliderValue, start_x, start_y, end_x, end_y) {
 // draw tracking rect at xy
 function drawRect(point) {
 
-  var img = document.getElementById("scream");
+  var img = document.getElementById("trash_can_image");
   ctx.drawImage(img,point.x-30,point.y-30);
   //  ctx.fillStyle = "yellow";
   // ctx.strokeStyle = "gray";
