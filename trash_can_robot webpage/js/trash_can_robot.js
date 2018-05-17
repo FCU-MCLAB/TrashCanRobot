@@ -10,16 +10,16 @@ var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouich
 var isBusy = false;
 var checkLoop = setInterval(CheckStatus, 500); //Check Status with a timer for each 0.5 sec.
 
-var fps = 60;
-var percent = 0
-var direction = 1;
+var fps = 10;
+var percent = 0;
+
 
 
 
 function CheckStatus() {
   // @TODO: fetch status from API (currently using a random function)
   var num = Math.floor(Math.random() * 100);
-  if (num <= 10) {
+  if (num <= 15) {
     isBusy = false;
   }
 
@@ -47,7 +47,7 @@ function SendRequest(name) {
   if (!isBusy) {
     MakeCanMove(endPoint); //moving the trashcan icon
     ShowPath(214.5, 750, endPoint[0], endPoint[1]);
-    
+
     //讓
     //MakeCanMove();
 
@@ -75,19 +75,19 @@ function ShowPath(start_x, start_y, end_x, end_y) {
 
 
 function MakeCanMove(endPoint) {
-
+  // console.log(percent);
   // set the animation position (0-100)
-  percent += direction;
-  if (percent < 0) {
+  if (percent == 100) {
     percent = 0;
-    direction = 1;
-  };
-  if (percent > 100) {
-    percent = 100;
     direction = -1;
   };
-  var newPoint = endPoint;
-  draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
+
+  if (percent < 100) {
+    percent += 1;
+    var newPoint = endPoint;
+    draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
+
+  };
   //console.log(endPoint[0]);
   //console.log(endPoint[1]);
 
@@ -101,37 +101,44 @@ function MakeCanMove(endPoint) {
 // draw the current frame based on sliderValue
 function draw(sliderValue, start_x, start_y, end_x, end_y) {
 
+
+  ctx.clearRect(0, 0, c.width, c.height)
+
   // draw the tracking rectangle
+  ShowPath(214.5, 750, end_x, end_y);
+
   var xy;
 
-  if (sliderValue < 25) {
-    var percent = sliderValue / 24;
-  
+  if (sliderValue < 100) {
+    var percent = sliderValue / 100;
+
     xy = getLineXYatPercent(
       { x: 214.5, y: 750},
-      { x: end_x, y: end_y}, 
+      { x: end_x, y: end_y},
       percent
     );
     }
+    else { percent=0;}
     //console.log(end_x);
     //console.log(end_y);
     console.log(xy);
   drawRect(xy);
+
 }
 
 
 // draw tracking rect at xy
 function drawRect(point) {
-  
+
   var img = document.getElementById("scream");
   ctx.drawImage(img,point.x-30,point.y-30);
-   ctx.fillStyle = "yellow";
-  ctx.strokeStyle = "gray";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  //ctx.rect(point.x, point.y, 25, 15);
-  ctx.fill();
-  ctx.stroke();
+  //  ctx.fillStyle = "yellow";
+  // ctx.strokeStyle = "gray";
+  // ctx.lineWidth = 1;
+  // ctx.beginPath();
+  // ctx.rect(point.x, point.y, 25, 15);
+  // ctx.fill();
+  // ctx.stroke();
 }
 
 // line: percent is 0-1
