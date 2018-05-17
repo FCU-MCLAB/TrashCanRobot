@@ -101,3 +101,15 @@
   z-index: -1;
 
 }
+
+#scream {
+  display: none;
+  width: 60px;
+  height: 60px;
+}
+
+#animate {
+  position: absolute;
+  top:780px;
+  left:190px;
+ }
