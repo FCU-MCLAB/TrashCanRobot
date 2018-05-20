@@ -4,40 +4,65 @@
 */
 
 /* Global Initialization */
+
+
+
 var c = document.getElementById("mycan");
 var ctx = c.getContext("2d");
-var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun"];
+var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun",];
+var origin = {x: 214.5, y: 750};
 var isBusy = false;
-var checkLoop = setInterval(CheckStatus, 500); //Check Status with a timer for each 0.5 sec.
-
-var fps = 10;
+var fps = 60;
 var percent = 0;
+var checkLoop = setInterval(CheckStatus, 500); // check status with a timer for each 0.5 sec
+
 
 
 
 
 function CheckStatus() {
-  // @TODO: fetch status from API (currently using a random function)
-  var num = Math.floor(Math.random() * 100);
-  if (num <= 15) {
-    isBusy = false;
-  }
+  // @TODO: fetch position from API to identify status
+  var data = FetchDataFromAPI();
+  
+  ctx.clearRect(0, 0, c.width, c.height); // clear canvas
+  requestAnimationFrame(function(){DrawTrashCan(data.position);}); // refresh trashcan position and draw
+  
+  if (data.distance <= 10) { isBusy = false; } else { isBusy = true; }
 
   // show images according status
-  if (isBusy) {//垃圾桶工作中
+  if (isBusy) {// 垃圾桶工作中
     for (var i in members) {
       var person = members[i];
       document.getElementById(person).disabled = true;
     }
-  } else { //垃圾桶無人使用時
+  } else { // 垃圾桶無人使用時
     for (var i in members) {
       var person = members[i];
       document.getElementById(person).disabled = false;
-      //  路徑消失
-      ctx.clearRect(0, 0, c.width, c.height)
+      ctx.clearRect(0, 0, c.width, c.height) // 路徑消失
     }
   }
   return isBusy;
+}
+
+function FetchDataFromAPI() {
+  var position = {x: 210, y: 745}; // fixed version: the position received from API
+  /* random version
+	 x = 200~230
+	 y = 735~765
+  */
+  var position = {x: Math.floor(Math.random()*30+200), y: Math.floor(Math.random()*30+735)};
+  
+  
+  var xDiff = Math.abs( position.x - origin.x ); // absolute value of x-axis difference
+  var yDiff = Math.abs( position.y - origin.y ); // absolute value of y-axis difference
+  var distance = Math.sqrt( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) );
+  var data = {
+	position: position,
+	distance: distance
+  };
+  
+  return data;
 }
 
 
@@ -48,18 +73,17 @@ function SendRequest(name) {
     MakeCanMove(endPoint); //moving the trashcan icon
     ShowPath(214.5, 750, endPoint[0], endPoint[1]);
 
-    //讓
-    //MakeCanMove();
-
     // @TODO: send request via API
 
     // @TODO: high-light target
 
-    // check status
+    // refresh by checking status
     isBusy = true;
     CheckStatus();
   }
 }
+
+
 
 function ShowPath(start_x, start_y, end_x, end_y) {
   ctx.beginPath();
@@ -78,6 +102,30 @@ function MakeCanMove(endPoint) {
   // console.log(percent);
   // set the animation position (0-100)
   if (percent == 100) {
+	direction = -1;
+	percent = 100;
+  }
+  if (percent < 100) {
+    percent += 1;
+    var newPoint = endPoint;
+    Draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
+    //console.log(newPoint);
+	
+	// request another frame
+	setTimeout( function() {
+	  requestAnimationFrame( function(){ MakeCanMove(newPoint); } ); 
+	}, 1000 / fps);
+  }
+  //console.log(endPoint[0]);
+  //console.log(endPoint[1]);
+
+}
+
+function MakeGoBack(endPoint) {
+  
+  endPoint[0]=214.5;
+  endPoint[1]=130;
+  if (percent == 100) {
     percent = 0;
     direction = -1;
   };
@@ -85,24 +133,46 @@ function MakeCanMove(endPoint) {
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
-    draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
-
+    GoBack(percent, 214.5, 130, 214.5, 750);
+    
   };
   //console.log(endPoint[0]);
   //console.log(endPoint[1]);
 
   // request another frame
-  setTimeout(function () {
-    requestAnimationFrame(MakeCanMove(newPoint));
+  setTimeout( function () {
+	requestAnimationFrame( function(){ MakeGoBack(newPoint); } );
   }, 1000 / fps);
 }
 
+function GoBack(sliderValue, start_x, start_y, end_x, end_y) {
+  ctx.clearRect(0, 0, c.width, c.height)
+
+  // draw the tracking rectangle
+  ShowPath(214.5, 130, 214.5, 750);
+
+  var xy;
+
+  if (sliderValue < 100) {
+    var percent = sliderValue / 100;
+
+    xy = GetLineXYAtPercent(
+      {x: 214.5, y: 130},
+      {x: 214.5, y: 750},
+      percent
+    );
+  } else { percent = 0; }
+    //console.log(end_x);
+    //console.log(end_y);
+    //console.log(xy);
+  DrawTrashCan(xy);
+}
 
 // draw the current frame based on sliderValue
-function draw(sliderValue, start_x, start_y, end_x, end_y) {
+function Draw(sliderValue, start_x, start_y, end_x, end_y) {
 
 
-  ctx.clearRect(0, 0, c.width, c.height)
+  ctx.clearRect(0, 0, c.width, c.height);
 
   // draw the tracking rectangle
   ShowPath(214.5, 750, end_x, end_y);
@@ -112,37 +182,30 @@ function draw(sliderValue, start_x, start_y, end_x, end_y) {
   if (sliderValue < 100) {
     var percent = sliderValue / 100;
 
-    xy = getLineXYatPercent(
-      { x: 214.5, y: 750},
-      { x: end_x, y: end_y},
+    xy = GetLineXYAtPercent(
+      {x: 214.5, y: 750},
+      {x: end_x, y: end_y},
       percent
     );
-    }
+  }
     else { percent=0;}
     //console.log(end_x);
     //console.log(end_y);
-    console.log(xy);
-  drawRect(xy);
+  //console.log(xy);
+  DrawTrashCan(xy);
 
 }
 
 
-// draw tracking rect at xy
-function drawRect(point) {
-
-  var img = document.getElementById("trash_can_image");
-  ctx.drawImage(img,point.x-30,point.y-30);
-  //  ctx.fillStyle = "yellow";
-  // ctx.strokeStyle = "gray";
-  // ctx.lineWidth = 1;
-  // ctx.beginPath();
-  // ctx.rect(point.x, point.y, 25, 15);
-  // ctx.fill();
-  // ctx.stroke();
+function DrawTrashCan(point) {
+  var img = document.getElementById("scream");
+  //img.style.left = point.x + "px";
+  //img.style.top = point.y + "px";
+  ctx.drawImage(img, point.x-30, point.y-30);
 }
 
 // line: percent is 0-1
-function getLineXYatPercent(startPt, endPt, percent) {
+function GetLineXYAtPercent(startPt, endPt, percent) {
   var dx = endPt.x - startPt.x;
   var dy = endPt.y - startPt.y;
   var X = startPt.x + dx * percent;
