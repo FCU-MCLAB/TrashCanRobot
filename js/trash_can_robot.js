@@ -4,14 +4,19 @@
 */
 
 /* Global Initialization */
+
+
+
 var c = document.getElementById("mycan");
 var ctx = c.getContext("2d");
-var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun"];
+var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun",];
+var icon=["home"]
 var isBusy = false;
-var checkLoop = setInterval(CheckStatus, 500); //Check Status with a timer for each 0.5 sec.
+var checkLoop = setInterval(CheckStatus, 250); //Check Status with a timer for each 0.5 sec.
 
-var fps = 10;
+var fps = 60;
 var percent = 0;
+
 
 
 
@@ -19,7 +24,7 @@ var percent = 0;
 function CheckStatus() {
   // @TODO: fetch status from API (currently using a random function)
   var num = Math.floor(Math.random() * 100);
-  if (num <= 15) {
+  if (num <= 12) {
     isBusy = false;
   }
 
@@ -46,7 +51,7 @@ function SendRequest(name) {
   var endPoint = ReturnEndPointByID(name);
   if (!isBusy) {
     MakeCanMove(endPoint); //moving the trashcan icon
-    ShowPath(214.5, 750, endPoint[0], endPoint[1]);
+    ShowPath(187, 700, endPoint[0], endPoint[1]);
 
     //讓
     //MakeCanMove();
@@ -60,6 +65,8 @@ function SendRequest(name) {
     CheckStatus();
   }
 }
+
+
 
 function ShowPath(start_x, start_y, end_x, end_y) {
   ctx.beginPath();
@@ -85,8 +92,8 @@ function MakeCanMove(endPoint) {
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
-    draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
-
+    draw(percent, 187, 700, endPoint[0], endPoint[1]);
+    console.log(newPoint);
   };
   //console.log(endPoint[0]);
   //console.log(endPoint[1]);
@@ -94,7 +101,32 @@ function MakeCanMove(endPoint) {
   // request another frame
   setTimeout(function () {
     requestAnimationFrame(MakeCanMove(newPoint));
-  }, 1000 / fps);
+  }, 1500 / fps);
+}
+
+function MakeGoBack(endPoint){
+  
+  endPoint[0]=187;
+  endPoint[1]=130;
+  if (percent == 100) {
+    percent = 0;
+    direction = -1;
+  };
+
+  if (percent < 100) {
+    percent += 1;
+    var newPoint=endPoint;
+    goback(percent,187,130,187, 700);
+    
+  };
+  //console.log(endPoint[0]);
+  //console.log(endPoint[1]);
+
+  // request another frame
+  setTimeout(function () {
+    console.log(percent);
+  requestAnimationFrame(MakeGoBack(newPoint));
+  }, 1500 / fps);
 }
 
 
@@ -105,7 +137,7 @@ function draw(sliderValue, start_x, start_y, end_x, end_y) {
   ctx.clearRect(0, 0, c.width, c.height)
 
   // draw the tracking rectangle
-  ShowPath(214.5, 750, end_x, end_y);
+  ShowPath(187, 700, end_x, end_y);
 
   var xy;
 
@@ -113,7 +145,7 @@ function draw(sliderValue, start_x, start_y, end_x, end_y) {
     var percent = sliderValue / 100;
 
     xy = getLineXYatPercent(
-      { x: 214.5, y: 750},
+      { x: 187, y: 700},
       { x: end_x, y: end_y},
       percent
     );
@@ -126,11 +158,35 @@ function draw(sliderValue, start_x, start_y, end_x, end_y) {
 
 }
 
+function goback(sliderValue, start_x, start_y, end_x, end_y){
+   ctx.clearRect(0, 0, c.width, c.height)
+
+  // draw the tracking rectangle
+  ShowPath(187,130,187, 700);
+
+  var xy;
+
+  if (sliderValue < 100) {
+    var percent = sliderValue / 100;
+
+    xy = getLineXYatPercent(
+      { x: 187, y: 130},
+      { x: 187, y: 700},
+      percent
+    );
+    }
+    else { percent=0;}
+    //console.log(end_x);
+    //console.log(end_y);
+    console.log(xy);
+  drawRect(xy);
+}
+
 
 // draw tracking rect at xy
 function drawRect(point) {
 
-  var img = document.getElementById("trash_can_image");
+  var img = document.getElementById("scream");
   ctx.drawImage(img,point.x-30,point.y-30);
   //  ctx.fillStyle = "yellow";
   // ctx.strokeStyle = "gray";
@@ -167,20 +223,25 @@ function ReturnEndPointByID(name) {
     Yuyun:  620,680
     右下轉折點:  620,750
   */
+  
+  /* 
+  換上定位後絕對座標
+  */ 
+  
   var end_x, end_y;
 
   switch (name) {
-    case 'Moon': end_x = 214.5; end_y = 130; break;
-    case 'Liao': end_x = 620; end_y = 130; break;
-    case 'Jacky': end_x = 214.5; end_y = 280; break;
-    case 'Audrey': end_x = 214.5; end_y = 280; break;
-    case 'Mag': end_x = 620; end_y = 280; break;
-    case 'Hank': end_x = 214.5; end_y = 480; break;
-    case 'Kane': end_x = 214.5; end_y = 480; break;
-    case 'Kouichi': end_x = 620; end_y = 480; break;
-    case 'Rich': end_x = 214.5; end_y = 680; break;
-    case 'Sheng': end_x = 214.5; end_y = 680; break;
-    case 'Yuyun': end_x = 620; end_y = 680; break;
+    case 'Moon': end_x = 187; end_y = 130; break;
+    case 'Liao': end_x = 550; end_y = 130; break;
+    case 'Jacky': end_x = 187; end_y = 280; break;
+    case 'Audrey': end_x = 187; end_y = 280; break;
+    case 'Mag': end_x = 550; end_y = 280; break;
+    case 'Hank': end_x = 187; end_y = 460; break;
+    case 'Kane': end_x = 187; end_y = 460; break;
+    case 'Kouichi': end_x = 550; end_y = 460; break;
+    case 'Rich': end_x = 187; end_y = 640; break;
+    case 'Sheng': end_x = 187; end_y = 640; break;
+    case 'Yuyun': end_x = 550; end_y = 640; break;
     default: break;
   }
   return [end_x, end_y];

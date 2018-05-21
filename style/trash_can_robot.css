@@ -1,11 +1,23 @@
+/* 
+div {
+  width: 700px;
+  height: 817px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -408.5px 0 0 -350px;
+} 網頁置中 
+*/ 
+
 .container .background{
   position: absolute;
   left: 8px;
   top: 80px;
-  width: 741px;
-  height: 818px;
+  width: 700px;
+  height: 817px;
   z-index: -2;
 }
+
 .container input{
   position: absolute;
   width: 80px;
@@ -40,62 +52,62 @@
 /* Coordinates */
 
 .container .Moon{
-  left: 319px;
+  left: 301px;
   top: 105px;
 }
 
 .container .Liao{
-  left: 456.25px;
+  left: 430.8px;
   top: 105px;
 }
 
 .container .Jacky{
-  left: 49px;
+  left: 46.27px;
   top: 260px;
 }
 
 .container .Audrey{
-  left: 317.25px;
+  left: 299.58px;
   top: 260px;
 }
 
 .container .Mag{
-  left: 456.25px;
+  left: 430.83px;
   top: 260px;
 }
 
 .container .Hank{
-  left: 49px;
+  left: 46.27px;
   top: 462.5px;
 }
 
 .container .Kane{
-  left: 317.25px;
+  left: 299.58px;
   top: 462.5px;
 }
 
 .container .Kouichi{
-  left: 456.25px;
+  left: 430.83px;
   top: 462.5px;
 }
 
 .container .Rich{
-  left: 49px;
+  left: 46.27px;
   top: 664.5px;
 }
 
 .container .Sheng{
-  left: 317.25px;
+  left: 299.58px;
   top: 664.5px;
 }
 
 .container .Yuyun{
-  left: 456.25px;
+  left: 430.83px;
   top: 664.5px;
 }
 
 .container .home{
-  left: 49px;
+  left: 46.27px;
   top: 110px;
 }
 
