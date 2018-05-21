@@ -5,12 +5,10 @@
 
 /* Global Initialization */
 
-
-
 var c = document.getElementById("mycan");
 var ctx = c.getContext("2d");
-var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun",];
-var origin = {x: 214.5, y: 750};
+var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun"];
+var origin = {x: 187, y: 700};
 var isBusy = false;
 var fps = 60;
 var percent = 0;
@@ -27,7 +25,7 @@ function CheckStatus() {
   ctx.clearRect(0, 0, c.width, c.height); // clear canvas
   requestAnimationFrame(function(){DrawTrashCan(data.position);}); // refresh trashcan position and draw
   
-  if (data.distance <= 10) { isBusy = false; } else { isBusy = true; }
+  if (data.distance <= 15) { isBusy = false; } else { isBusy = true; }
 
   // show images according status
   if (isBusy) {// 垃圾桶工作中
@@ -46,13 +44,14 @@ function CheckStatus() {
 }
 
 function FetchDataFromAPI() {
-  var position = {x: 210, y: 745}; // fixed version: the position received from API
-  /* random version
-	 x = 200~230
-	 y = 735~765
-  */
-  var position = {x: Math.floor(Math.random()*30+200), y: Math.floor(Math.random()*30+735)};
+  //var position = {x: 187, y: 700}; // fixed version: the position received from API
+  //var position = {x: Math.floor(Math.random()*30+172), y: Math.floor(Math.random()*30+685)}; // random version
   
+  /* manual version */
+  var position = {
+    x: document.getElementById("x").value,
+	y: document.getElementById("y").value
+  };
   
   var xDiff = Math.abs( position.x - origin.x ); // absolute value of x-axis difference
   var yDiff = Math.abs( position.y - origin.y ); // absolute value of y-axis difference
@@ -71,7 +70,7 @@ function SendRequest(name) {
   var endPoint = ReturnEndPointByID(name);
   if (!isBusy) {
     MakeCanMove(endPoint); //moving the trashcan icon
-    ShowPath(214.5, 750, endPoint[0], endPoint[1]);
+    ShowPath(187, 700, endPoint[0], endPoint[1]);
 
     // @TODO: send request via API
 
@@ -103,12 +102,12 @@ function MakeCanMove(endPoint) {
   // set the animation position (0-100)
   if (percent == 100) {
 	direction = -1;
-	percent = 100;
+	percent = 0;
   }
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
-    Draw(percent, 214.5, 750, endPoint[0], endPoint[1]);
+    Draw(percent, 187, 700, endPoint[0], endPoint[1]);
     //console.log(newPoint);
 	
 	// request another frame
@@ -123,8 +122,8 @@ function MakeCanMove(endPoint) {
 
 function MakeGoBack(endPoint) {
   
-  endPoint[0]=214.5;
-  endPoint[1]=130;
+  endPoint[0] = 187;
+  endPoint[1] = 130;
   if (percent == 100) {
     percent = 0;
     direction = -1;
@@ -133,7 +132,7 @@ function MakeGoBack(endPoint) {
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
-    GoBack(percent, 214.5, 130, 214.5, 750);
+    GoBack(percent, 187, 130, 187, 700);
     
   };
   //console.log(endPoint[0]);
@@ -149,7 +148,7 @@ function GoBack(sliderValue, start_x, start_y, end_x, end_y) {
   ctx.clearRect(0, 0, c.width, c.height)
 
   // draw the tracking rectangle
-  ShowPath(214.5, 130, 214.5, 750);
+  ShowPath(187, 130, 187, 700);
 
   var xy;
 
@@ -157,8 +156,8 @@ function GoBack(sliderValue, start_x, start_y, end_x, end_y) {
     var percent = sliderValue / 100;
 
     xy = GetLineXYAtPercent(
-      {x: 214.5, y: 130},
-      {x: 214.5, y: 750},
+      {x: 187, y: 130},
+      {x: 187, y: 700},
       percent
     );
   } else { percent = 0; }
@@ -175,7 +174,7 @@ function Draw(sliderValue, start_x, start_y, end_x, end_y) {
   ctx.clearRect(0, 0, c.width, c.height);
 
   // draw the tracking rectangle
-  ShowPath(214.5, 750, end_x, end_y);
+  ShowPath(187, 700, end_x, end_y);
 
   var xy;
 
@@ -183,12 +182,11 @@ function Draw(sliderValue, start_x, start_y, end_x, end_y) {
     var percent = sliderValue / 100;
 
     xy = GetLineXYAtPercent(
-      {x: 214.5, y: 750},
+      {x: 187, y: 700},
       {x: end_x, y: end_y},
       percent
     );
-  }
-    else { percent=0;}
+  } else { percent=0; }
     //console.log(end_x);
     //console.log(end_y);
   //console.log(xy);
@@ -233,17 +231,17 @@ function ReturnEndPointByID(name) {
   var end_x, end_y;
 
   switch (name) {
-    case 'Moon': end_x = 214.5; end_y = 130; break;
-    case 'Liao': end_x = 620; end_y = 130; break;
-    case 'Jacky': end_x = 214.5; end_y = 280; break;
-    case 'Audrey': end_x = 214.5; end_y = 280; break;
-    case 'Mag': end_x = 620; end_y = 280; break;
-    case 'Hank': end_x = 214.5; end_y = 480; break;
-    case 'Kane': end_x = 214.5; end_y = 480; break;
-    case 'Kouichi': end_x = 620; end_y = 480; break;
-    case 'Rich': end_x = 214.5; end_y = 680; break;
-    case 'Sheng': end_x = 214.5; end_y = 680; break;
-    case 'Yuyun': end_x = 620; end_y = 680; break;
+    case 'Moon': end_x = 187; end_y = 130; break;
+    case 'Liao': end_x = 550; end_y = 130; break;
+    case 'Jacky': end_x = 187; end_y = 280; break;
+    case 'Audrey': end_x = 187; end_y = 280; break;
+    case 'Mag': end_x = 550; end_y = 280; break;
+    case 'Hank': end_x = 187; end_y = 460; break;
+    case 'Kane': end_x = 187; end_y = 460; break;
+    case 'Kouichi': end_x = 550; end_y = 460; break;
+    case 'Rich': end_x = 187; end_y = 640; break;
+    case 'Sheng': end_x = 187; end_y = 640; break;
+    case 'Yuyun': end_x = 550; end_y = 640; break;
     default: break;
   }
   return [end_x, end_y];
