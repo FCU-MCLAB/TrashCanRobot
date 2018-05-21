@@ -8,7 +8,7 @@
 var c = document.getElementById("mycan");
 var ctx = c.getContext("2d");
 var members = ["Moon", "Liao", "Jacky", "Audrey", "Mag", "Hank", "Kane", "Kouichi", "Rich", "Sheng", "Yuyun"];
-var origin = {x: 187, y: 700};
+var origin = { x: 187, y: 700 };
 var isBusy = false;
 var fps = 60;
 var percent = 0;
@@ -21,10 +21,10 @@ var checkLoop = setInterval(CheckStatus, 500); // check status with a timer for 
 function CheckStatus() {
   // @TODO: fetch position from API to identify status
   var data = FetchDataFromAPI();
-  
+
   ctx.clearRect(0, 0, c.width, c.height); // clear canvas
-  requestAnimationFrame(function(){DrawTrashCan(data.position);}); // refresh trashcan position and draw
-  
+  requestAnimationFrame(function () { DrawTrashCan(data.position); }); // refresh trashcan position and draw
+
   if (data.distance <= 15) { isBusy = false; } else { isBusy = true; }
 
   // show images according status
@@ -46,21 +46,21 @@ function CheckStatus() {
 function FetchDataFromAPI() {
   //var position = {x: 187, y: 700}; // fixed version: the position received from API
   //var position = {x: Math.floor(Math.random()*30+172), y: Math.floor(Math.random()*30+685)}; // random version
-  
+
   /* manual version */
   var position = {
     x: document.getElementById("x").value,
-	y: document.getElementById("y").value
+    y: document.getElementById("y").value
   };
-  
-  var xDiff = Math.abs( position.x - origin.x ); // absolute value of x-axis difference
-  var yDiff = Math.abs( position.y - origin.y ); // absolute value of y-axis difference
-  var distance = Math.sqrt( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) );
+
+  var xDiff = Math.abs(position.x - origin.x); // absolute value of x-axis difference
+  var yDiff = Math.abs(position.y - origin.y); // absolute value of y-axis difference
+  var distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
   var data = {
-	position: position,
-	distance: distance
+    position: position,
+    distance: distance
   };
-  
+
   return data;
 }
 
@@ -96,54 +96,51 @@ function ShowPath(start_x, start_y, end_x, end_y) {
 
 
 
-
+//使垃圾桶移動動畫
 function MakeCanMove(endPoint) {
-  // console.log(percent);
   // set the animation position (0-100)
   if (percent == 100) {
-	direction = -1;
-	percent = 0;
+    direction = -1;
+    percent = 0;
   }
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
     Draw(percent, 187, 700, endPoint[0], endPoint[1]);
-    //console.log(newPoint);
-	
-	// request another frame
-	setTimeout( function() {
-	  requestAnimationFrame( function(){ MakeCanMove(newPoint); } ); 
-	}, 1000 / fps);
+
+    // request another frame
+    setTimeout(function () {
+      requestAnimationFrame(function () { MakeCanMove(newPoint); });
+    }, 1000 / fps);
+
   }
-  //console.log(endPoint[0]);
-  //console.log(endPoint[1]);
 
 }
 
+//使垃圾桶回原點動畫
 function MakeGoBack(endPoint) {
-  
+
   endPoint[0] = 187;
   endPoint[1] = 130;
   if (percent == 100) {
     percent = 0;
     direction = -1;
-  };
+  }
 
   if (percent < 100) {
     percent += 1;
     var newPoint = endPoint;
     GoBack(percent, 187, 130, 187, 700);
-    
-  };
-  //console.log(endPoint[0]);
-  //console.log(endPoint[1]);
 
-  // request another frame
-  setTimeout( function () {
-	requestAnimationFrame( function(){ MakeGoBack(newPoint); } );
-  }, 1000 / fps);
+    setTimeout(function () {
+      requestAnimationFrame(function () { MakeGoBack(newPoint); });
+    }, 1000 / fps);
+
+  }
+
 }
 
+// 畫出垃圾桶圖片，並顯示在指定路徑上
 function GoBack(sliderValue, start_x, start_y, end_x, end_y) {
   ctx.clearRect(0, 0, c.width, c.height)
 
@@ -156,18 +153,15 @@ function GoBack(sliderValue, start_x, start_y, end_x, end_y) {
     var percent = sliderValue / 100;
 
     xy = GetLineXYAtPercent(
-      {x: 187, y: 130},
-      {x: 187, y: 700},
+      { x: 187, y: 130 },
+      { x: 187, y: 700 },
       percent
     );
   } else { percent = 0; }
-    //console.log(end_x);
-    //console.log(end_y);
-    //console.log(xy);
   DrawTrashCan(xy);
 }
 
-// draw the current frame based on sliderValue
+// 畫出垃圾桶圖片，並顯示在指定路徑上
 function Draw(sliderValue, start_x, start_y, end_x, end_y) {
 
 
@@ -182,27 +176,26 @@ function Draw(sliderValue, start_x, start_y, end_x, end_y) {
     var percent = sliderValue / 100;
 
     xy = GetLineXYAtPercent(
-      {x: 187, y: 700},
-      {x: end_x, y: end_y},
+      { x: 187, y: 700 },
+      { x: end_x, y: end_y },
       percent
     );
-  } else { percent=0; }
-    //console.log(end_x);
-    //console.log(end_y);
-  //console.log(xy);
+  } else { percent = 0; }
   DrawTrashCan(xy);
 
 }
 
-
+// 畫出垃圾桶圖片，並顯示在指定路徑上
 function DrawTrashCan(point) {
-  var img = document.getElementById("scream");
+  var img = document.getElementById("trash_can_icon");
+  console.log(point);
   //img.style.left = point.x + "px";
   //img.style.top = point.y + "px";
-  ctx.drawImage(img, point.x-30, point.y-30);
+  ctx.drawImage(img, point.x - 30, point.y - 30);
 }
 
 // line: percent is 0-1
+// 計算路徑移動比例
 function GetLineXYAtPercent(startPt, endPt, percent) {
   var dx = endPt.x - startPt.x;
   var dy = endPt.y - startPt.y;

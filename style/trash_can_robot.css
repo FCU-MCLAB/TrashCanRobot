@@ -119,8 +119,8 @@ div {
 
 }
 
-#scream {
-  display: none;
+#trash_can_icon{
+  display: none; 
   width: 60px;
   height: 60px;
 }
