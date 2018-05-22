@@ -49,41 +49,6 @@ function FetchDataFromAPI() {
   /* http request */
   var httpReq = new XMLHttpRequest();
   httpReq.open("GET", theUrl, false); //true for async
-  /*httpReq.onload = function (e) {
-    if (httpReq.readyState === 4) {
-      if (httpReq.status === 200) {
-        jsonObj = JSON.parse(httpReq.responseText);
-        console.log(jsonObj.Status);
-        console.log(jsonObj.Position.X);
-        console.log(jsonObj.Position.Y);
-        if (jsonObj.Status == 1) {
-          var position = {
-            x: jsonObj.Position.X,
-            y: jsonObj.Position.Y
-          };
-          var xDiff = Math.abs( position.x - origin.x ); // absolute value of x-axis difference
-          var yDiff = Math.abs( position.y - origin.y ); // absolute value of y-axis difference
-          var distance = Math.sqrt( Math.pow(xDiff, 2) + Math.pow(yDiff, 2) );
-          var data = {
-            position: position,
-            distance: distance
-          };
-          console.log(data.position);
-          console.log(data.distance);
-          console.log("before return");
-          return data;
-        } else {
-          return null;
-        }
-      } else {
-        console.error(httpReq.statusText);
-      }
-    }
-  };
-  httpReq.onerror = function (e) {
-    console.error(httpReq.statusText);
-  };
-  */
   httpReq.send(null);
   
   jsonObj = JSON.parse(httpReq.responseText);
